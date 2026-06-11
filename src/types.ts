@@ -24,7 +24,7 @@
 
 /** Stable identifier per supported fulfillment provider. Persisted in
  *  consuming apps' DB/settings — keep values stable. */
-export type ProviderName = "printful";
+export type ProviderName = "printful" | "printify";
 
 // ---------------------------------------------------------------------------
 // Orders
@@ -49,8 +49,14 @@ export interface PodRecipient {
 
 export interface PodOrderItem {
   /** Provider catalog variant ID (e.g. Printful variant 1320 =
-   *  11oz mug). */
+   *  11oz mug; Printify variant within a blueprint+print-provider). */
   variantId: number;
+  /** Catalog product ID. Printful infers it from the variant, so it's
+   *  optional there; Printify REQUIRES it (blueprint_id). */
+  productId?: number;
+  /** Printify-only: which print provider produces the blueprint.
+   *  Printful ignores this. */
+  printProviderId?: number;
   quantity: number;
   /**
    * Publicly fetchable URL of the print file. For private storage
@@ -135,10 +141,14 @@ export interface PodProvider {
    * price/stock). Returns null when the variant doesn't exist —
    * callers use this for config validation, so "not found" is a
    * value, not an exception.
+   *
+   * Provider notes: Printful works keyless here; Printify requires
+   * `PRINTIFY_API_KEY` AND `opts.printProviderId`.
    */
   getCatalogVariant(
     productId: number,
     variantId: number,
+    opts?: { printProviderId?: number },
   ): Promise<CatalogVariant | null>;
 
   /**

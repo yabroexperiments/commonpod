@@ -23,6 +23,14 @@ and each app picks its provider via its own settings/env.
 | Name | Status | Credentials |
 |---|---|---|
 | `printful` | ✅ v1 | `PRINTFUL_API_KEY` env (catalog lookups work keyless) |
+| `printify` | ✅ v1 | `PRINTIFY_API_KEY` (+ optional `PRINTIFY_SHOP_ID`; first shop auto-resolved). All endpoints need the key. |
+
+Provider model note: a Printful item is `(productId, variantId)`; a
+Printify item is `(productId=blueprint, printProviderId, variantId)` —
+set `printProviderId` on `PodOrderItem` / pass it to
+`getCatalogVariant` when using Printify. API-created Printify orders
+sit `on-hold` (= our `draft`) until `confirmOrder()` sends them to
+production.
 
 ## Install
 

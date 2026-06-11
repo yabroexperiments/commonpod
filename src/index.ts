@@ -40,10 +40,17 @@ export {
   type PrintfulProviderConfig,
 } from "./printful";
 
+export {
+  PrintifyProvider,
+  createPrintifyProvider,
+  type PrintifyProviderConfig,
+} from "./printify";
+
 import { createPrintfulProvider } from "./printful";
+import { createPrintifyProvider } from "./printify";
 import type { PodProvider, ProviderName } from "./types";
 
-const VALID_PROVIDERS: readonly ProviderName[] = ["printful"];
+const VALID_PROVIDERS: readonly ProviderName[] = ["printful", "printify"];
 
 /** Type guard for provider names from settings rows / env / URLs. */
 export function isProviderName(value: unknown): value is ProviderName {
@@ -59,6 +66,7 @@ export function isProviderName(value: unknown): value is ProviderName {
  */
 export function createProvider(name: ProviderName): PodProvider {
   if (name === "printful") return createPrintfulProvider();
+  if (name === "printify") return createPrintifyProvider();
   throw new Error(
     `commonpod: unknown provider name "${name as string}". ` +
       `Valid: ${VALID_PROVIDERS.join(", ")}.`,

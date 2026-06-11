@@ -44,3 +44,11 @@ Doabag) — that's the whole reason this is a package and not app code.
 - Printful catalog endpoints are public; order endpoints 401 without
   the key. `getCatalogVariant` intentionally runs keyless so config
   validation works before the operator creates the account.
+- Printify: only the top-level blueprint LIST is public — provider/
+  variant lookups and everything else 401 without `PRINTIFY_API_KEY`.
+  A Printify item is (blueprint, printProviderId, variantId) — three
+  keys; `PodOrderItem.printProviderId` is REQUIRED there. API-created
+  orders sit `on-hold` (= draft) until `confirmOrder()`
+  (send_to_production) — that call starts charging/production.
+- Printify money fields are integer cents; adapters normalize to
+  decimal strings (Printful's native format) at the boundary.
