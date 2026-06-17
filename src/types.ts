@@ -130,6 +130,55 @@ export interface CatalogVariant {
 }
 
 // ---------------------------------------------------------------------------
+// Mockups
+// ---------------------------------------------------------------------------
+
+export interface GenerateMockupsInput {
+  /** Catalog product ID (e.g. Printful 19 = 11oz mug). */
+  productId: number;
+  /** One or more catalog variant IDs to render. */
+  variantIds: number[];
+  /**
+   * Publicly fetchable URL of the artwork to lay onto the product. A
+   * watermarked PREVIEW image is fine here (and recommended) — the
+   * mockup is shown to the shopper before purchase, so don't expose the
+   * clean print file. PNG/JPG (providers may reject other formats).
+   */
+  imageUrl: string;
+  /**
+   * Provider placement key for where the art goes (Printful: "default"
+   * for mugs/stickers/posters, "front" for apparel/totes,
+   * "embroidery_front_large" for caps). Defaults to "default". Discover
+   * valid keys via the provider's print-file/template metadata.
+   */
+  placement?: string;
+  /** Output format. Defaults to "jpg". */
+  format?: "jpg" | "png";
+  /** Printify-only: which print provider produces the blueprint. */
+  printProviderId?: number;
+}
+
+export interface MockupImage {
+  variantId: number;
+  placement: string;
+  /**
+   * Provider-hosted mockup image URL. **Temporary** — providers expire
+   * these (Printful within ~weeks, others sooner). The consuming app
+   * MUST download + re-store it (e.g. its own bucket) rather than
+   * hotlink this URL in production.
+   */
+  url: string;
+  /** Additional angles/views the provider rendered, if any. */
+  extraUrls?: string[];
+}
+
+export interface GenerateMockupsResult {
+  mockups: MockupImage[];
+  /** Provider's raw task payload — logging/debugging only. */
+  raw?: unknown;
+}
+
+// ---------------------------------------------------------------------------
 // The provider contract
 // ---------------------------------------------------------------------------
 
@@ -167,4 +216,14 @@ export interface PodProvider {
    * omit it — callers must feature-check before use.
    */
   confirmOrder?(providerOrderId: string): Promise<PodOrderResult>;
+
+  /**
+   * Render the given artwork onto the product → photorealistic mockup
+   * image(s). Optional + provider-specific: Printful exposes a
+   * dedicated async Mockup Generator; providers that generate mockups
+   * only as a side effect of product creation (e.g. Printify) may omit
+   * this — callers must feature-check before use. Returned URLs are
+   * temporary; cache them.
+   */
+  generateMockups?(input: GenerateMockupsInput): Promise<GenerateMockupsResult>;
 }
