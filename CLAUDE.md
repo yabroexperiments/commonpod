@@ -54,6 +54,7 @@ Doabag) — that's the whole reason this is a package and not app code.
   decimal strings (Printful's native format) at the boundary.
 
 
+
 <!-- ECVP:BEGIN (managed by install-vet-protocol.sh — edit the yabro-hq copy, then re-run) -->
 > **🛡️ EXTERNAL CODE VETTING PROTOCOL — mandatory, ALL projects
 > (Albert, 2026-07-21).** NO external skill / plugin / MCP server /
