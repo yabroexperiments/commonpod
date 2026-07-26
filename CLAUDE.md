@@ -11,10 +11,46 @@ v1 surface: `getCatalogVariant` (config validation; keyless on
 Printful), `createOrderDraft` (ALWAYS draft — confirming charges money
 and is a separate explicit step), `getOrder`, optional `confirmOrder`.
 
+Plus a second, non-adapter surface: **mockup imaging** (see below).
+
 Consumers: **furrybooth** (Printful, English market). Planned: a
 Traditional-Chinese FurryBooth at hahadoggo.com/booth with an
 Asia-region provider (2026-05 research candidates: 巨茂 / 理想 /
 Doabag) — that's the whole reason this is a package and not app code.
+
+## Second surface: mockup imaging (NOT a provider adapter)
+
+The package is no longer only `PodProvider` adapters. `src/lifestyle-mockup.ts`
+(added 2026-07-26, SHA `2d91a38`) is **pure imaging math** with the same
+package stance: dependency-free, storage-agnostic, raw RGBA buffers in/out.
+
+- `compositeLifestyleMockup(scene, artwork, {quad, blend, featherPx, opacity})`
+  — perspective-warps artwork onto a 4-corner print area in a product
+  photo and molds it with the scene's own luminance (shadows/wrinkles
+  read through the print). MUTATES `scene.data` in place.
+  Helpers exported: `squareToQuad` (Heckbert), `invert3`,
+  `applyHomography`, `isQuad`; types `Quad`/`QuadPoint`/`Mat3`/`RawImage`/
+  `LifestyleCompositeOptions`.
+- **Quad convention: 4 corners `[x,y]` as PERCENT of scene W/H, order
+  TL, TR, BR, BL.** Same convention FurryBooth uses for
+  `product-shelf-map.json` hotspots — keep it for any new map file.
+- `blend` 0.85 ≈ fabric (wrinkles visible), ~0.6 ≈ flat surfaces
+  (framed print, sticker).
+- **WHY it exists / why deterministic:** re-render models (gpt-image,
+  nano-banana, Flux Kontext) can stage a product in a real scene but they
+  REPAINT the artwork — fatal when the artwork is a customer's pet
+  portrait. Cutout services preserve pixels but can't do worn/held
+  products. So: AI generates the scene with a **BLANK** product, this
+  composites the exact design. Every artwork pixel comes from the artwork
+  buffer, so design fidelity is guaranteed by construction. Full
+  buy-vs-build research: furrybooth `docs/mockup-strategy-research-2026-07-23.md`.
+- Consumer glue lives in the app (furrybooth `src/lib/lifestyle.ts` +
+  `/admin/mockups`): storage, persistence, sharp decode/encode. If you
+  add another imaging helper, keep that split — package = logic, app =
+  I/O.
+- ⚠️ TS is strict with `noUncheckedIndexedAccess`: buffer reads need `!`
+  and fixed-length matrices need a tuple type (`Mat3`), not `number[]`,
+  or `npm run typecheck` fails with dozens of "possibly undefined".
 
 ## Conventions (inherited from commonpayment)
 
