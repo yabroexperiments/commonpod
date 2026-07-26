@@ -46,6 +46,18 @@ export {
   type PrintifyProviderConfig,
 } from "./printify";
 
+export {
+  compositeLifestyleMockup,
+  squareToQuad,
+  invert3,
+  applyHomography,
+  isQuad,
+  type Quad,
+  type QuadPoint,
+  type RawImage,
+  type LifestyleCompositeOptions,
+} from "./lifestyle-mockup";
+
 import { createPrintfulProvider } from "./printful";
 import { createPrintifyProvider } from "./printify";
 import type { PodProvider, ProviderName } from "./types";
