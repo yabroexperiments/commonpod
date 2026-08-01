@@ -8,6 +8,7 @@ Verdicts: 🟢 approved · 🟡 approved-with-conditions · 🔴 rejected (do-no
 
 | Date | Artifact | Source (canonical) | Pinned version/SHA | Tier | Scanners run | Verdict | Conditions / notes |
 |---|---|---|---|---|---|---|---|
+| 2026-07-22 | Anthropic `frontend-design` skill v1.1.0 (vendored at `.claude/skills/frontend-design/`) | https://github.com/anthropics/claude-code/tree/main/plugins/frontend-design | repo `ac062f33ab0c` · see `.claude/skills/frontend-design/PROVENANCE.md` | T1 (verified anthropics org) | SkillSpector `--with-llm` + full-file read + quarantine dry-run — **performed once in `yabro-hq`, not re-run here** | GREEN (inherited) | Pure instruction layer, zero code, requests no tools/permissions. Vendored byte-identical rather than marketplace-installed, so upstream cannot auto-update past the pin. **Master row + full evidence: `yabro-hq/docs/vetted-external-code.md`** — this row exists so the skill is not "present but unlisted" here. Updates only via re-vet. |
 
 ## Rejected log
 
